@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Qwen 3.6 · DFlash n7 + p-min 0.6",
+    "kodas": {
+      "tps": 47.9,
+      "accept": 0.81
+    },
+    "mąstymas": {
+      "tps": 39.8,
+      "accept": 0.8
+    }
+  },
+  {
+    "name": "Qwen 3.8 · MTP n6 + p-min 0.6",
+    "kodas": {
+      "tps": 67.8,
+      "accept": 0.8
+    },
+    "mąstymas": {
+      "tps": 41.3,
+      "accept": 0.58
+    }
+  },
+  {
+    "name": "Qwen 3.8 · MTP n4 + p-min 0.6",
+    "kodas": {
+      "tps": 67.0,
+      "accept": 0.86
+    },
+    "mąstymas": {
+      "tps": 43.4,
+      "accept": 0.64
+    }
+  }
+]

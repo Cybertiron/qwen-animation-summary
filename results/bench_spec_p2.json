@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Qwen 3.8 · MTP n4 + p-min 0.6",
+    "kodas": {
+      "tps": 70.0,
+      "accept": 0.87
+    },
+    "mąstymas": {
+      "tps": 42.1,
+      "accept": 0.62
+    }
+  },
+  {
+    "name": "Qwen 3.8 · MTP n4 + p-min 0.65",
+    "kodas": {
+      "tps": 66.6,
+      "accept": 0.88
+    },
+    "mąstymas": {
+      "tps": 44.1,
+      "accept": 0.7
+    }
+  },
+  {
+    "name": "Qwen 3.8 · MTP n4 + p-min 0.7",
+    "kodas": {
+      "tps": 63.7,
+      "accept": 0.85
+    },
+    "mąstymas": {
+      "tps": 43.4,
+      "accept": 0.72
+    }
+  },
+  {
+    "name": "Qwen 3.6 · DFlash n7 + p-min 0.6",
+    "kodas": {
+      "tps": 51.3,
+      "accept": 0.82
+    },
+    "mąstymas": {
+      "tps": 40.8,
+      "accept": 0.81
+    }
+  },
+  {
+    "name": "Qwen 3.6 · DFlash n7 + p-min 0.65",
+    "kodas": {
+      "tps": 56.2,
+      "accept": 0.9
+    },
+    "mąstymas": {
+      "tps": 40.7,
+      "accept": 0.86
+    }
+  },
+  {
+    "name": "Qwen 3.6 · DFlash n7 + p-min 0.7",
+    "kodas": {
+      "tps": 46.0,
+      "accept": 0.86
+    },
+    "mąstymas": {
+      "tps": 40.1,
+      "accept": 0.87
+    }
+  }
+]

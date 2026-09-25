@@ -1,0 +1,9 @@
+{
+  "name": "qwen-animation-tools",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "^23.11.1",
+    "three": "0.170.0"
+  }
+}

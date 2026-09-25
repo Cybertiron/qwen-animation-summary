@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Qwen 3.6 · DSpark n7 + p-min 0.65",
+    "kodas": {
+      "tps": 39.0,
+      "accept": 0.87
+    },
+    "mąstymas": {
+      "tps": 30.9,
+      "accept": 0.86
+    }
+  },
+  {
+    "name": "Qwen 3.6 · DSpark n7 + p-min 0.7",
+    "kodas": {
+      "tps": 32.5,
+      "accept": 0.91
+    },
+    "mąstymas": {
+      "tps": 30.1,
+      "accept": 0.87
+    }
+  },
+  {
+    "name": "Qwen 3.8 · DSpark n7 + p-min 0.65",
+    "kodas": {
+      "tps": 49.3,
+      "accept": 0.88
+    },
+    "mąstymas": {
+      "tps": 32.7,
+      "accept": 0.78
+    }
+  },
+  {
+    "name": "Qwen 3.8 · DSpark n7 + p-min 0.7",
+    "kodas": {
+      "tps": 47.9,
+      "accept": 0.9
+    },
+    "mąstymas": {
+      "tps": 32.9,
+      "accept": 0.88
+    }
+  }
+]

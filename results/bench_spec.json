@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Qwen 3.6 · be spekuliacijos",
+    "kodas": {
+      "tps": 27.2,
+      "accept": null
+    },
+    "mąstymas": {
+      "tps": 25.1,
+      "accept": null
+    }
+  },
+  {
+    "name": "Qwen 3.6 · MTP n4",
+    "kodas": {
+      "tps": 44.4,
+      "accept": 0.61
+    },
+    "mąstymas": {
+      "tps": 37.6,
+      "accept": 0.49
+    }
+  },
+  {
+    "name": "Qwen 3.6 · DFlash",
+    "kodas": {
+      "tps": 44.6,
+      "accept": 0.67
+    },
+    "mąstymas": {
+      "tps": 38.7,
+      "accept": 0.55
+    }
+  },
+  {
+    "name": "Qwen 3.8 · be spekuliacijos",
+    "kodas": {
+      "tps": 30.4,
+      "accept": null
+    },
+    "mąstymas": {
+      "tps": 30.0,
+      "accept": null
+    }
+  },
+  {
+    "name": "Qwen 3.8 · MTP n4",
+    "kodas": {
+      "tps": 68.1,
+      "accept": 0.81
+    },
+    "mąstymas": {
+      "tps": 39.2,
+      "accept": 0.37
+    }
+  },
+  {
+    "name": "Qwen 3.8 · DFlash2",
+    "kodas": {
+      "tps": 64.2,
+      "accept": 0.81
+    },
+    "mąstymas": {
+      "tps": 41.3,
+      "accept": 0.41
+    }
+  },
+  {
+    "name": "Qwen 3.8 · DSpark",
+    "kodas": {
+      "tps": 55.2,
+      "accept": 0.62
+    },
+    "mąstymas": {
+      "tps": 35.9,
+      "accept": 0.29
+    }
+  }
+]

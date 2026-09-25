@@ -1,0 +1,39 @@
+{
+  "claude": [],
+  "qwen38-no-thinking": [],
+  "qwen38-xhigh-v1": [
+    "split #1: fast oscillation ±5° at ~5 Hz between e=2.1s and e=2.1s — fine for insect wings (a blur), too fast to read for bigger parts.",
+    "split #1: rotation.x oscillates IRREGULARLY (interval spread 90%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen38-xhigh-v2": [
+    "split #2 (nested): fast oscillation ±34° at ~1 Hz between e=3.0s and e=5.6s — fine for insect wings (a blur), too fast to read for bigger parts.",
+    "split #2 (nested): rotation.z oscillates IRREGULARLY (interval spread 138%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT).",
+    "split #3 (nested): fast oscillation ±34° at ~1 Hz between e=3.0s and e=5.6s — fine for insect wings (a blur), too fast to read for bigger parts.",
+    "split #3 (nested): rotation.z oscillates IRREGULARLY (interval spread 138%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen38-xhigh-v3": [
+    "split #2 (nested): very fast rotation between e=2.6s and e=5.1s (up to 1627°/s, ~111° turned) — looks like a sudden unnatural spin.",
+    "split #2 (nested): rotation.z oscillates IRREGULARLY (interval spread 245%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT).",
+    "split #3 (nested): very fast rotation between e=2.6s and e=5.1s (up to 1627°/s, ~111° turned) — looks like a sudden unnatural spin.",
+    "split #3 (nested): rotation.z oscillates IRREGULARLY (interval spread 245%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen38-medium": [
+    "split #2 (nested): fast oscillation ±29° at ~2 Hz between e=2.2s and e=5.7s — fine for insect wings (a blur), too fast to read for bigger parts.",
+    "split #2 (nested): rotation.z oscillates IRREGULARLY (interval spread 104%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT).",
+    "split #3 (nested): fast oscillation ±29° at ~2 Hz between e=2.2s and e=5.7s — fine for insect wings (a blur), too fast to read for bigger parts.",
+    "split #3 (nested): rotation.z oscillates IRREGULARLY (interval spread 104%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen38-low": [
+    "split #2 (nested): rotation.z oscillates IRREGULARLY (interval spread 52%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT).",
+    "split #3 (nested): rotation.z oscillates IRREGULARLY (interval spread 52%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen36-thinking": [
+    "split #1: very fast rotation between e=4.9s and e=5.1s (up to 1636°/s, ~363° turned) — looks like a sudden unnatural spin.",
+    "split #1: rotation.y oscillates IRREGULARLY (interval spread 114%) — reads as twitching, not a steady flap. Use Math.sin(t * CONSTANT)."
+  ],
+  "qwen36-inject-low": [
+    "split #1: fast oscillation ±40° at ~5 Hz between e=4.8s and e=4.9s — fine for insect wings (a blur), too fast to read for bigger parts."
+  ],
+  "qwen38-medium-eyes": [],
+  "qwen36-eyes": []
+}

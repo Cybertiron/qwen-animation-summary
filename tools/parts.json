@@ -1,0 +1,306 @@
+{
+  "_about": "Įvardytos modelių dalys modelio vienetais (Y aukštyn, +Z priekis) iš tools/make_models.py. qwen_anim.py jas perskaičiuoja į u/v/w ir įdeda į užklausą. [x0,x1], [y0,y1], [z0,z1].",
+  "voxel": [
+    {
+      "name": "bee — whole (body, stripes, eyes, antennae, wings, legs); its legs STAND ON the foliage top (contact plane y=2.4) — cut strictly ABOVE it",
+      "x": [
+        -0.95,
+        0.15
+      ],
+      "y": [
+        2.405,
+        3.4
+      ],
+      "z": [
+        -0.2,
+        0.6
+      ],
+      "contact_below": true
+    },
+    {
+      "name": "bee body (yellow, dark stripes at the back)",
+      "x": [
+        -0.75,
+        -0.05
+      ],
+      "y": [
+        2.5,
+        3.1
+      ],
+      "z": [
+        -0.2,
+        0.6
+      ],
+      "colour": 3
+    },
+    {
+      "name": "bee wings, both (light blue #9ED8F6 — the SAME colour as the pond and waterfall; above the body)",
+      "x": [
+        -0.95,
+        0.15
+      ],
+      "y": [
+        3.1,
+        3.4
+      ],
+      "z": [
+        0.0,
+        0.3
+      ],
+      "colour": 2
+    },
+    {
+      "name": "bee left wing (-x)",
+      "x": [
+        -0.95,
+        -0.55
+      ],
+      "y": [
+        3.1,
+        3.4
+      ],
+      "z": [
+        0.0,
+        0.3
+      ],
+      "colour": 2
+    },
+    {
+      "name": "bee right wing (+x)",
+      "x": [
+        -0.25,
+        0.15
+      ],
+      "y": [
+        3.1,
+        3.4
+      ],
+      "z": [
+        0.0,
+        0.3
+      ],
+      "colour": 2
+    },
+    {
+      "name": "bee eyes (dark, on the front face)",
+      "x": [
+        -0.65,
+        -0.15
+      ],
+      "y": [
+        2.8,
+        3.0
+      ],
+      "z": [
+        0.5,
+        0.6
+      ],
+      "colour": 0
+    },
+    {
+      "name": "bee antennae (dark, front top)",
+      "x": [
+        -0.65,
+        -0.15
+      ],
+      "y": [
+        3.1,
+        3.3
+      ],
+      "z": [
+        0.4,
+        0.5
+      ],
+      "colour": 0
+    },
+    {
+      "name": "bee legs (dark, standing on the foliage top — contact plane y=2.4)",
+      "x": [
+        -0.65,
+        -0.15
+      ],
+      "y": [
+        2.405,
+        2.5
+      ],
+      "z": [
+        -0.1,
+        0.5
+      ],
+      "colour": 0,
+      "contact_below": true
+    },
+    {
+      "name": "tree foliage (green, stepped) — its TOP SURFACE (y=2.4) is where the bee stands; never include it in the bee",
+      "x": [
+        -0.9,
+        0.1
+      ],
+      "y": [
+        1.4,
+        2.4
+      ],
+      "z": [
+        -0.3,
+        0.7
+      ],
+      "colour": 1
+    },
+    {
+      "name": "tree trunk (brown)",
+      "x": [
+        -0.5,
+        -0.3
+      ],
+      "y": [
+        0.8,
+        1.6
+      ],
+      "z": [
+        0.1,
+        0.3
+      ],
+      "colour": 0
+    },
+    {
+      "name": "island ground (brown dirt, green grass top)",
+      "x": [
+        -1.1,
+        0.9
+      ],
+      "y": [
+        0.0,
+        0.8
+      ],
+      "z": [
+        -1.1,
+        0.9
+      ]
+    },
+    {
+      "name": "pond (light blue, in the grass)",
+      "x": [
+        0.1,
+        0.7
+      ],
+      "y": [
+        0.6,
+        0.8
+      ],
+      "z": [
+        -1.1,
+        -0.5
+      ],
+      "colour": 2
+    },
+    {
+      "name": "waterfall (light blue, over the back edge)",
+      "x": [
+        0.1,
+        0.5
+      ],
+      "y": [
+        0.0,
+        0.8
+      ],
+      "z": [
+        -1.3,
+        -1.1
+      ],
+      "colour": 2
+    }
+  ],
+  "robot": [
+    {
+      "name": "head (with ears and antenna)",
+      "x": [
+        -0.54,
+        0.54
+      ],
+      "y": [
+        1.27,
+        2.125
+      ],
+      "z": [
+        -0.31,
+        0.34
+      ]
+    },
+    {
+      "name": "right arm with hand (+x side); shoulder hinge at the top",
+      "x": [
+        0.47,
+        0.69
+      ],
+      "y": [
+        0.53,
+        1.24
+      ],
+      "z": [
+        -0.13,
+        0.13
+      ]
+    },
+    {
+      "name": "left arm with hand (-x side); shoulder hinge at the top",
+      "x": [
+        -0.69,
+        -0.47
+      ],
+      "y": [
+        0.53,
+        1.24
+      ],
+      "z": [
+        -0.13,
+        0.13
+      ]
+    },
+    {
+      "name": "body / torso (chest panel on the front)",
+      "x": [
+        -0.46,
+        0.46
+      ],
+      "y": [
+        0.56,
+        1.28
+      ],
+      "z": [
+        -0.31,
+        0.34
+      ]
+    },
+    {
+      "name": "legs with feet",
+      "x": [
+        -0.38,
+        0.38
+      ],
+      "y": [
+        0.0,
+        0.58
+      ],
+      "z": [
+        -0.19,
+        0.25
+      ]
+    },
+    {
+      "name": "eyes and mouth (front of the head, colour 2)",
+      "x": [
+        -0.29,
+        0.29
+      ],
+      "y": [
+        1.38,
+        1.7
+      ],
+      "z": [
+        0.28,
+        0.34
+      ],
+      "colour": 2
+    }
+  ]
+}
