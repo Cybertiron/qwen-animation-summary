@@ -291,7 +291,10 @@ def main():
                 print(f'[{rnd}] Qwen žiūri į kadrus…')
                 text = call_llm(a.endpoint, api_model, messages, a.think, a.max_tokens, a.temperature, a.effort)
             except urllib.error.HTTPError as e:
-                print(f'  (serveris nepriima paveikslėlių — paleiskite su --mmproj; {e})')
+                body = e.read().decode('utf-8', 'replace')[:300]
+                hint = ('su DFlash juodraščiu llama.cpp b11037 lūžta ant paveikslėlių — „akims“ paleiskite serverį be DFlash (-md)'
+                        if 'speculative' in body else 'paleiskite su --mmproj')
+                print(f'  (akys nepavyko: {e}; {body}\n   → {hint})')
                 break
             if 'LOOKS_GOOD' in text and '```' not in text:
                 print('  👁 Qwen: LOOKS_GOOD — atrodo gerai')

@@ -25,7 +25,7 @@ IDEAS = {
     'cactus': 'Kaktusas vazone išsipučia ir sumirga, tada sprogsta: dalys (vazonas, kūnas, rankos, žiedas) išlekia į šonus ir nukrenta ant pagrindo, '
               'o paskui sugrįžta ir susideda atgal.',
 }
-LABELS = {'claude': 'Claude', 'bonsai': 'Bonsai 2', 'qwen36': 'Qwen 3.6', 'qwen38': 'Qwen 3.8', 'qwen38think': 'Qwen 3.8 thinking', 'qwen38think2': 'Qwen 3.8 thinking v2 (xhigh)', 'qwen38medium': 'Qwen 3.8 thinking medium', 'qwen38low': 'Qwen 3.8 thinking low', 'qwen38xhigh': 'Qwen 3.8 thinking xhigh v3', 'qwen36think': 'Qwen 3.6 thinking', 'qwen36low': 'Qwen 3.6 thinking + low', 'qwen38look': 'Qwen 3.8 medium + akys', 'qwen36look': 'Qwen 3.6 thinking + akys', 'flashnext': 'Flash-Next'}
+LABELS = {'claude': 'Claude', 'gsqrco': 'Qwen 3.8 GSQ-RCO IQ3_S (10-08)', 'gsqrco_xhigh': 'Qwen 3.8 GSQ-RCO xhigh + DFlash2 (10-08)', 'qwen38ref_xhigh': 'Qwen 3.8 IQ4_XS xhigh + DFlash2 (10-08)', 'qwen38ref': 'Qwen 3.8 IQ4_XS (10-08)', 'bonsai': 'Bonsai 2', 'qwen36': 'Qwen 3.6', 'qwen38': 'Qwen 3.8', 'qwen38think': 'Qwen 3.8 thinking', 'qwen38think2': 'Qwen 3.8 thinking v2 (xhigh)', 'qwen38medium': 'Qwen 3.8 thinking medium', 'qwen38low': 'Qwen 3.8 thinking low', 'qwen38xhigh': 'Qwen 3.8 thinking xhigh v3', 'qwen36think': 'Qwen 3.6 thinking', 'qwen36low': 'Qwen 3.6 thinking + low', 'qwen38look': 'Qwen 3.8 medium + akys', 'qwen36look': 'Qwen 3.6 thinking + akys', 'flashnext': 'Flash-Next'}
 
 
 def run(tag, endpoint, models, rounds, think, max_tokens=None, temperature=None, effort=None, inject=None):
