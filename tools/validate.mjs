@@ -38,6 +38,9 @@ const colors = ['#ff5a1f', '#46e5c8', '#ffd166', '#b388ff'];
 const mats = colors.map(c => new THREE.MeshStandardMaterial({ color: c }));
 const printGroup = new THREE.Group(), modelGroup = new THREE.Group(); printGroup.add(modelGroup);
 geos.forEach((g, i) => modelGroup.add(new THREE.Mesh(g, mats[Math.min(i, 3)])));
+const matTris = mats.map((_, i) => geos.reduce((n, g, k) => n + (Math.min(k, 3) === i ? g.attributes.position.count / 3 : 0), 0));
+const totTris = matTris.reduce((a, b) => a + b, 0) || 1;
+const glowMax = mats.map(() => 0);
 const extra = new THREE.Group(); printGroup.add(extra);
 const light = new THREE.PointLight(0xffffff, 0, 6, 1.5); printGroup.add(light);
 const H = sz0.y * s;
@@ -118,6 +121,7 @@ for (let e = 0; e <= 7.0001; e += 1 / 30) {
     if (seriesFile) series.push({ e: +e.toFixed(3), v: sn.map(r => r.slice(0, 6).map(x => +x.toFixed(4))) });
     if (sn.flat().some(bad)) { errors.push(`NaN / Infinity transformacijose ties e=${e.toFixed(2)}`); break; }
     maxMove = Math.max(maxMove, diff(sn, rest));
+    mats.forEach((m, i) => { glowMax[i] = Math.max(glowMax[i], (m.emissiveIntensity ?? 1) * Math.max(m.emissive.r, m.emissive.g, m.emissive.b)); });
     let nanExtra = false; extra.traverse(o => { if ([...o.position.toArray(), ...o.scale.toArray()].some(bad)) nanExtra = true; });
     if (nanExtra) { errors.push(`NaN extra objektuose ties e=${e.toFixed(2)}`); break; }
     if (Math.abs(e) < 1e-6) { let v0 = 0; extra.traverseVisible(o => { if (o.isMesh && (!o.material.transparent || o.material.opacity > .02) && o.scale.x * o.scale.y * o.scale.z > 1e-6) v0++; });
@@ -142,6 +146,7 @@ if (!errors.length) {
     stats.extraMeshes = meshes;
     if (meshes > 300) warnings.push(`Per daug extra objektų (${meshes}) — iki 300`);
     if (stats.msPerFrame > 2) warnings.push(`Lėta: ${stats.msPerFrame} ms kadrui (norma < 2 ms)`);
+    mats.forEach((m, i) => { const share = matTris[i] / totTris; if (glowMax[i] > 0.15 && share > 0.15) warnings.push(`ctx.mats[${i}] švyti (emissive) — tai VISA spalvos #${i} gija, ${Math.round(share * 100)} % modelio, todėl švyti ne viena dalis, o visos šios spalvos dalys. Vienai daliai — mažas objektas ctx.extra arba ctx.light`); });
     if (matState() !== mat0) errors.push('Pakeista ctx.mats spalva / permatomumas — leidžiama keisti tik emissive ir emissiveIntensity');
     try { if (A.reset) A.reset(ctx); } catch (err) { errors.push('reset() klaida: ' + err.message); }
 }

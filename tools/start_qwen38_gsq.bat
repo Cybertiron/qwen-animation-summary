@@ -14,7 +14,7 @@ set CUDA_VISIBLE_DEVICES=1
   --spec-type draft-dflash -md "C:\AI2\models\Qwen3.8-27B\Qwen3.8-27B-DFlash2-Q8_0.gguf" -ngld 99 ^
   --spec-draft-n-max 7 --spec-draft-p-min 0.65 ^
   --top-p 0.95 --top-k 20 --min-p 0.0 ^
-  --reasoning-budget 8000 --reasoning-budget-message "Thinking time is up. Now write the final module in exactly one code block." ^
+  --reasoning-budget 12000 --reasoning-budget-message "Thinking time is up. Now write the final module in exactly one js code block." ^
   --parallel 1 --no-warmup --jinja --port 1234
 echo.
 echo === Serveris sustojo. ===

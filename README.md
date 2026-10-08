@@ -20,7 +20,8 @@ JavaScript modules and were compared with **Claude Opus 5.5**. Along the way we 
   **DFlash n7** is the fastest for both models: Qwen 3.8 **43.2 t/s thinking / 71.5 t/s code** (vs 30 / 30 without
   speculation), Qwen 3.6 **40.7 / 56.2** (vs 25 / 27). DSpark was the weakest.
 - Giving Qwen **"eyes"** (rendered frames + a motion chart) let it catch and fix some visual bugs by itself, but not all.
-- **Update 2026-10-08:** [ISTA DASLab's GSQ-RCO](#4b-update-2026-10-08--gsq-rco-and-a-re-run) quant of Qwen 3.8 (11.8 GB, ~3.5 bit) makes a bee in the same quality class as the 14.3 GB IQ4_XS (~10 % faster at medium, but slower at xhigh). Also found: in llama.cpp b11037 a **DFlash draft + `--mmproj` breaks every request with an image**, so the "eyes" loop silently did nothing in those runs.
+- **Update 2026-10-08:** [ISTA DASLab's GSQ-RCO](#4b-update-2026-10-08--gsq-rco-and-a-re-run) quant of Qwen 3.8 (11.8 GB, ~3.5 bit) makes a bee in the same quality class as the 14.3 GB IQ4_XS (~10 % faster at medium, but slower at xhigh). Also found: in llama.cpp b11037 a **DFlash draft + `--mmproj` breaks every request with an image**, so the "eyes" loop silently did nothing in those runs —
+  with the **MTP** variant of the same quant the eyes work again.
 
 > Code comments in `tools/` are partly in Lithuanian (the project language); the README and prompts are English.
 
@@ -35,7 +36,7 @@ JavaScript modules and were compared with **Claude Opus 5.5**. Along the way we 
 | Runtime | llama.cpp **b11037** (commit `44be98f05`), native Windows CUDA build, `llama-server` (OpenAI-compatible API) |
 | Qwen 3.8 | `Qwen3.8-27B-UD-IQ4_XS.gguf` (14.3 GB, built-in MTP head `blk.64.nextn.*`) |
 | Qwen 3.6 | `Qwen3.6-27B-UD-Q4_K_XL.gguf` (17.9 GB, built-in MTP head) · first comparison used `Qwen3.6-27B-IQ4_XS.gguf` (no MTP) |
-| Qwen 3.8 GSQ-RCO (10-08) | `Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf` (11.8 GB, ISTA DASLab non-uniform mix of IQ3_S / IQ4_XS / IQ3_XXS / Q4_K / BF16 tensors; no MTP head, no own mmproj) |
+| Qwen 3.8 GSQ-RCO (10-08) | `Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf` (11.8 GB, ISTA DASLab non-uniform mix of IQ3_S / IQ4_XS / IQ3_XXS / Q4_K / BF16 tensors; no MTP head) · `…-IQ3_S-mtp.gguf` (12.1 GB, same + MTP head) · `mmproj-Qwen3.8-27B-BF16.gguf` |
 | Draft models | `Qwen3.8-27B-DFlash2-Q8_0.gguf` (z-lab, latest DFlash for 3.8) · `Qwen3.6-27B-DFlash-Q8_0.gguf` · `Qwen3.8-27B-DSpark-Q8_0.gguf` |
 | Vision | `Qwen3.8-27B-mmproj-F16.gguf`, `Qwen3.6-27B-mmproj-F16.gguf` (for the "eyes" loop) |
 | Other LLMs (first comparison) | Qwen 3.8 Flash-Next IQ4_XS (177B MoE), Ternary-Bonsai-2-27B (1.58-bit Qwen 3.8, PrismML llama.cpp fork) |
@@ -57,6 +58,7 @@ Linux/macOS: build the same tag from source (`git checkout b11037`, `cmake -DGGM
 | Qwen 3.8 draft · **DFlash2** | `Qwen3.8-27B-DFlash2-Q8_0.gguf` | 2.06 GB | [z-lab/Qwen3.8-27B-DFlash2-GGUF](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF) (original: [z-lab/Qwen3.8-27B-DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2); latest z-lab DFlash for 3.8) |
 | Qwen 3.8 draft · DSpark | `Qwen3.8-27B-DSpark-Q8_0.gguf` | 1.46 GB | [magnitudedev/Qwen3.8-27B-DSpark-GGUF](https://huggingface.co/magnitudedev/Qwen3.8-27B-DSpark-GGUF) (GGUF of [RadixArk/Qwen3.8-27B-DSpark](https://huggingface.co/RadixArk/Qwen3.8-27B-DSpark)) |
 | Qwen 3.8 GSQ-RCO main model (10-08) | `Qwen3.8-27B-GSQ-RCO-IQ3_S.gguf` | 11.77 GB | [ISTA-DASLab](https://huggingface.co/ISTA-DASLab) (GSQ-RCO quant of [Qwen/Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)); works with the Qwen 3.8 `mmproj-F16` and the **DFlash2** draft above |
+| Qwen 3.8 GSQ-RCO with MTP head (10-08) | `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` + `mmproj-Qwen3.8-27B-BF16.gguf` | 12.12 GB + 0.93 GB | [ISTA-DASLab](https://huggingface.co/ISTA-DASLab) — same quant with Qwen's MTP layer kept (`nextn_predict_layers = 1`), use `--spec-type draft-mtp` |
 | Qwen 3.6 main model | `Qwen3.6-27B-UD-Q4_K_XL.gguf` | 17.61 GB | [unsloth/Qwen3.6-27B-GGUF](https://huggingface.co/unsloth/Qwen3.6-27B-GGUF) (of [Qwen/Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B)) |
 | Qwen 3.6 main model (1st comparison) | `Qwen3.6-27B-IQ4_XS.gguf` | 15.44 GB | [unsloth/Qwen3.6-27B-GGUF](https://huggingface.co/unsloth/Qwen3.6-27B-GGUF) — no MTP head |
 | Qwen 3.6 vision | `mmproj-F16.gguf` (renamed `Qwen3.6-27B-mmproj-F16.gguf`) | 0.93 GB | [unsloth/Qwen3.6-27B-GGUF](https://huggingface.co/unsloth/Qwen3.6-27B-GGUF) |
@@ -249,8 +251,10 @@ and lands back in the same spot."* All rows below use the improved setup and a 1
 | [Qwen 3.8 · xhigh v2](#qwen-38--xhigh-v2) | 3 | 25 min | **best-looking Qwen bee** (slowest), but took a chunk of the treetop* |
 | [Qwen 3.8 IQ4_XS · medium (10-08)](#qwen-38-iq4_xs--medium-10-08) | 1 | 3.0 min | **almost the best** — only the wing edges don't move |
 | [Qwen 3.8 GSQ-RCO · medium (10-08)](#qwen-38-gsq-rco--medium-10-08) | 2 | 5.4 min | **quite good** — more edges cut off |
-| [Qwen 3.8 GSQ-RCO · xhigh (10-08)](#qwen-38-gsq-rco--xhigh-10-08) | 1 | 4.2 min | not judged yet |
-| [Qwen 3.8 IQ4_XS · xhigh (10-08)](#qwen-38-iq4_xs--xhigh-10-08) | 4 | 11.5 min | not judged yet |
+| [Qwen 3.8 GSQ-RCO · xhigh, 8k budget (10-08)](#qwen-38-gsq-rco--xhigh-8k-budget-10-08) | 1 | 4.2 min | **really good** — the owner's favourite of the 10-08 runs |
+| [Qwen 3.8 GSQ-RCO-mtp · xhigh, 12k, MTP + eyes (10-08)](#qwen-38-gsq-rco-mtp--xhigh-12k-mtp--eyes-10-08) | 4 | 17.9 min | not judged yet — eyes fixed an off-centre orbit |
+| [Qwen 3.8 GSQ-RCO · xhigh, 12k (10-08)](#qwen-38-gsq-rco--xhigh-12k-10-08) | 1 | 5.7 min | not judged yet |
+| [Qwen 3.8 IQ4_XS · xhigh, 8k budget (10-08)](#qwen-38-iq4_xs--xhigh-8k-budget-10-08) | 4 | 11.5 min | ✗ trunk and soil start glowing |
 | [Qwen 3.8 · no thinking](#qwen-38--no-thinking) | 4 | ~3 min | good, only a timid flight |
 | [Qwen 3.8 · medium + eyes](#qwen-38--medium--eyes) | 3 | 5.8 min | almost — fixed its own too-fast wings, but doesn't circle the tree |
 | [Qwen 3.6 · + eyes](#qwen-36---eyes) | 4 | 12.4 min | almost — fixed its own out-of-phase wings |
@@ -262,8 +266,8 @@ and lands back in the same spot."* All rows below use the improved setup and a 1
 \* caused by *our* host/validator, since fixed: the part box was computed in world space while the print bed
 rotates (u/w shifted), and the validator demanded rotation exactly 0 at 7 s (forcing models to "unwind" a full turn).
 
-Rows marked **(10-08)** were run on 2026-10-08 with the current launcher (DFlash2 n7 + p-min 0.65, `--mmproj`, server
-`--reasoning-budget 8000` instead of 12k) — details in [4b](#4b-update-2026-10-08--gsq-rco-and-a-re-run).
+Rows marked **(10-08)** were run on 2026-10-08 (DFlash2 n7 + p-min 0.65 unless noted, `--mmproj`). The first four used a
+server `--reasoning-budget` of **8000** (a local launcher had drifted from 12k) — details in [4b](#4b-update-2026-10-08--gsq-rco-and-a-re-run).
 
 ### Gallery — where the problems are visible
 
@@ -303,16 +307,34 @@ Round 1 did not return home by 7 s (offset 0.86), round 2 fixed it. Owner: quite
 ![frames](images/gsqrco-frames.png)
 ![motion](images/gsqrco-motion.png)
 
-#### Qwen 3.8 GSQ-RCO · xhigh (10-08)
-Clean on the first try, 9,101 tokens — *fewer* than GSQ-RCO at medium. Wings flap steadily (±41°, ~2 Hz) from e=2.0 to 5.8 s.
+#### Qwen 3.8 GSQ-RCO · xhigh, 8k budget (10-08)
+Clean on the first try, 9,101 tokens — *fewer* than GSQ-RCO at medium, because the 8k budget cut the thinking. Wings flap
+steadily (±41°, ~2 Hz) from e=2.0 to 5.8 s. Owner: **really good**.
 ![frames](images/gsqrco_xhigh-frames.png)
 ![motion](images/gsqrco_xhigh-motion.png)
 
-#### Qwen 3.8 IQ4_XS · xhigh (10-08)
+#### Qwen 3.8 IQ4_XS · xhigh, 8k budget (10-08)
 Rounds 1–3 kept breaking the rules (moving while still printing / while supports are removed, not back home at 7 s);
-round 4 passed. 31,253 tokens, 11.5 min — again xhigh costs 3–4× medium.
+round 4 passed. 31,253 tokens, 11.5 min — again xhigh costs 3–4× medium. **Owner: the island starts glowing.** It wanted the
+bee's dark eyes to glow and raised `ctx.mats[0].emissive` — but a material is a whole filament colour (trunk + soil + eyes,
+40 % of the model). The rules allowed emissive, so the validator passed it; it now warns when a glowing colour covers
+more than 15 % of the model, and the prompt explains the shared-material trap.
 ![frames](images/qwen38ref_xhigh-frames.png)
 ![motion](images/qwen38ref_xhigh-motion.png)
+
+#### Qwen 3.8 GSQ-RCO-mtp · xhigh, 12k, MTP + eyes (10-08)
+The MTP build with its own BF16 mmproj — the eyes finally ran. Round 2 (looking at the frames): *"The orbit was centered on
+the scene origin, but the tree stands at u≈.35/w≈.68 — the bee circled off-center … The extra yaw envelope made the rotation
+curve spike to ~440° and snap back"*. Its fix broke three timing rules, round 3 repaired them, round 4: `LOOKS_GOOD`.
+45,612 tokens, 17.9 min.
+![frames](images/gsqmtp_xhigh-frames.png)
+![motion](images/gsqmtp_xhigh-motion.png)
+
+#### Qwen 3.8 GSQ-RCO · xhigh, 12k (10-08)
+Same as the 8k run but with the 12k budget: clean on the first try, 13,589 tokens. The motion check flags *irregular*
+wing flapping (interval spread 159 %); the eyes round failed (DFlash + image bug).
+![frames](images/gsqrco_xhigh12k-frames.png)
+![motion](images/gsqrco_xhigh12k-motion.png)
 
 #### Qwen 3.8 · no thinking
 Looks right, but the flight is small and timid.
@@ -375,6 +397,8 @@ Both models were run back to back on GPU1 with identical flags; numbers come fro
 | GSQ-RCO · xhigh | 17.7 GB | 39.7 | 68.4 % | 3.1 |
 | IQ4_XS · xhigh (3 long answers) | 19.6 GB | 46.9 / 45.7 / 44.8 | 68–72 % | 3.5–3.7 |
 | IQ4_XS · xhigh, a code-only repair answer | | 90.1 | 95.9 % | 7.2 |
+| GSQ-RCO · xhigh 12k, DFlash2 n7 | 17.7 GB | 42.6 | 69.9 % | 3.4 |
+| GSQ-RCO-mtp · xhigh 12k, **MTP n4** + p-min 0.65 (4 answers) | | 42.3 / 45.5 / 44.8 / 42.0 | 74–82 % | 2.8–3.1 |
 
 **Findings**
 
@@ -387,6 +411,11 @@ Both models were run back to back on GPU1 with identical flags; numbers come fro
   tokens advance the main model's positions but not the drafter's. So in all four 10-08 runs the "eyes" round never
   happened (our script used to report it as "server does not accept images"; it now prints the real error).
   For eyes runs start the server without `-md` (DFlash), until llama.cpp fixes it.
+- **MTP + vision works.** The `-mtp` GGUF with `--spec-type draft-mtp --spec-draft-n-max 4 --spec-draft-p-min 0.65` and its
+  own BF16 mmproj handled every image request, and on xhigh thinking it is as fast as DFlash2 (42–45 vs 42.6 t/s).
+- **The thinking budget was the hidden variable.** Every 8k answer ended at ~8.8–9.8k tokens (8000 thinking + code), even at
+  medium — the budget cut them all. At 12k the xhigh answers still end at 13.1–13.6k, i.e. they hit 12k too. The owner's
+  favourite (GSQ-RCO xhigh at 8k) suggests that a capped xhigh is not worse than an uncapped one for this task.
 
 ## 5. What we learned
 
