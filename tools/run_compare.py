@@ -25,10 +25,10 @@ IDEAS = {
     'cactus': 'Kaktusas vazone išsipučia ir sumirga, tada sprogsta: dalys (vazonas, kūnas, rankos, žiedas) išlekia į šonus ir nukrenta ant pagrindo, '
               'o paskui sugrįžta ir susideda atgal.',
 }
-LABELS = {'claude': 'Claude', 'gsqmtp_xhigh': 'Qwen 3.8 GSQ-RCO-mtp xhigh 12k + MTP + akys (10-08)', 'gsqrco_xhigh12k': 'Qwen 3.8 GSQ-RCO xhigh 12k + DFlash2 (10-08)', 'gsqrco': 'Qwen 3.8 GSQ-RCO IQ3_S (10-08)', 'gsqrco_xhigh': 'Qwen 3.8 GSQ-RCO xhigh + DFlash2 (10-08)', 'qwen38ref_xhigh': 'Qwen 3.8 IQ4_XS xhigh + DFlash2 (10-08)', 'qwen38ref': 'Qwen 3.8 IQ4_XS (10-08)', 'bonsai': 'Bonsai 2', 'qwen36': 'Qwen 3.6', 'qwen38': 'Qwen 3.8', 'qwen38think': 'Qwen 3.8 thinking', 'qwen38think2': 'Qwen 3.8 thinking v2 (xhigh)', 'qwen38medium': 'Qwen 3.8 thinking medium', 'qwen38low': 'Qwen 3.8 thinking low', 'qwen38xhigh': 'Qwen 3.8 thinking xhigh v3', 'qwen36think': 'Qwen 3.6 thinking', 'qwen36low': 'Qwen 3.6 thinking + low', 'qwen38look': 'Qwen 3.8 medium + akys', 'qwen36look': 'Qwen 3.6 thinking + akys', 'flashnext': 'Flash-Next'}
+LABELS = {'claude': 'Claude', 'strata_medium': 'Qwen 3.8 Flash-Next GSQ-RCO IQ3_S · Strata · medium (10-11)', 'strata_xhigh': 'Qwen 3.8 Flash-Next GSQ-RCO IQ3_S · Strata · xhigh (10-11)', 'strata_xhigh12k': 'Qwen 3.8 Flash-Next GSQ-RCO IQ3_S · Strata · xhigh 12k (10-11)', 'gsqmtp_xhigh': 'Qwen 3.8 GSQ-RCO-mtp xhigh 12k + MTP + akys (10-08)', 'gsqrco_xhigh12k': 'Qwen 3.8 GSQ-RCO xhigh 12k + DFlash2 (10-08)', 'gsqrco': 'Qwen 3.8 GSQ-RCO IQ3_S (10-08)', 'gsqrco_xhigh': 'Qwen 3.8 GSQ-RCO xhigh + DFlash2 (10-08)', 'qwen38ref_xhigh': 'Qwen 3.8 IQ4_XS xhigh + DFlash2 (10-08)', 'qwen38ref': 'Qwen 3.8 IQ4_XS (10-08)', 'bonsai': 'Bonsai 2', 'qwen36': 'Qwen 3.6', 'qwen38': 'Qwen 3.8', 'qwen38think': 'Qwen 3.8 thinking', 'qwen38think2': 'Qwen 3.8 thinking v2 (xhigh)', 'qwen38medium': 'Qwen 3.8 thinking medium', 'qwen38low': 'Qwen 3.8 thinking low', 'qwen38xhigh': 'Qwen 3.8 thinking xhigh v3', 'qwen36think': 'Qwen 3.6 thinking', 'qwen36low': 'Qwen 3.6 thinking + low', 'qwen38look': 'Qwen 3.8 medium + akys', 'qwen36look': 'Qwen 3.6 thinking + akys', 'flashnext': 'Flash-Next'}
 
 
-def run(tag, endpoint, models, rounds, think, max_tokens=None, temperature=None, effort=None, inject=None):
+def run(tag, endpoint, models, rounds, think, max_tokens=None, temperature=None, effort=None, inject=None, look=True, budget=0):
     out = ANIMS / tag
     out.mkdir(parents=True, exist_ok=True)
     res_file = out / '_results.json'
@@ -38,6 +38,7 @@ def run(tag, endpoint, models, rounds, think, max_tokens=None, temperature=None,
         cmd = [sys.executable, str(HERE / 'qwen_anim.py'), '--model', mid, '--idea', IDEAS[mid], '--endpoint', endpoint,
                '--out-dir', str(out), '--rounds', str(rounds)] + (['--max-tokens', str(max_tokens)] if max_tokens else [])
         cmd += (['--temperature', str(temperature)] if temperature is not None else []) + (['--think'] if think else ['--no-think']) + (['--effort', effort] if effort else []) + (['--inject-effort', inject] if inject else [])
+        cmd += ([] if look else ['--no-look']) + (['--reasoning-budget', str(budget)] if budget else [])   # be „akių“ / mąstymo riba užklausoje
         p = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', env={**__import__('os').environ, 'PYTHONIOENCODING': 'utf-8'})
         log = p.stdout + p.stderr
         tokens = sum(int(x) for x in re.findall(r'← (\d+) žetonų', log))
@@ -85,8 +86,10 @@ if __name__ == '__main__':
     ap.add_argument('--temperature', type=float, default=None)
     ap.add_argument('--effort', choices=['low', 'medium', 'xhigh'], default=None)
     ap.add_argument('--inject-effort', choices=['low', 'medium', 'xhigh'], default=None)
+    ap.add_argument('--look', action=argparse.BooleanOptionalAction, default=True)   # --no-look: modelis nemato paveikslėlių
+    ap.add_argument('--reasoning-budget', type=int, default=0)                       # mąstymo riba užklausoje (Strata)
     a = ap.parse_args()
     if a.tag:
-        run(a.tag, a.endpoint, a.models.split(','), a.rounds, a.think, a.max_tokens, a.temperature, a.effort, a.inject_effort)
+        run(a.tag, a.endpoint, a.models.split(','), a.rounds, a.think, a.max_tokens, a.temperature, a.effort, a.inject_effort, a.look, a.reasoning_budget)
     if a.page or not a.tag:
         page()

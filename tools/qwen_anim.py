@@ -142,9 +142,14 @@ def build_messages(entry, idea, inject=None):
     return [{'role': 'system', 'content': system}, {'role': 'user', 'content': user}]
 
 
+REASONING_BUDGET = 0                                 # --reasoning-budget: mąstymo riba užklausoje (Strata: reasoning_budget_tokens; llama.cpp — serverio --reasoning-budget)
+
+
 def call_llm(endpoint, api_model, messages, think, max_tokens, temperature, effort=None):
     body = {'model': api_model, 'messages': messages, 'temperature': temperature, 'max_tokens': max_tokens,
             'chat_template_kwargs': {'enable_thinking': think, **({'reasoning_effort': effort} if think and effort else {})}}
+    if think and REASONING_BUDGET:
+        body['reasoning_budget_tokens'] = REASONING_BUDGET
     req = urllib.request.Request(endpoint.rstrip('/') + '/chat/completions', data=json.dumps(body).encode(),
                                  headers={'Content-Type': 'application/json'})
     t = time.time()
@@ -223,9 +228,12 @@ def main():
     ap.add_argument('--dry-run', action='store_true', help='tik išspausdinti užklausą')
     ap.add_argument('--look', action=argparse.BooleanOptionalAction, default=True,
                     help='„akys“: po techninės patikros Qwen pamato kadrus + judesio grafiką ir pataiso (reikia serverio su --mmproj)')
+    ap.add_argument('--reasoning-budget', type=int, default=0, help='mąstymo riba žetonais užklausoje (serveriams, kurie ją priima, pvz. Strata); 0 — nesiųsti')
     ap.add_argument('--look-rounds', type=int, default=2, help='kiek kartų Qwen gali taisyti pagal tai, ką mato')
     ap.add_argument('--out-dir', default=None, help='išsaugoti čia (pvz. models/anims/qwen) — models.json nekeičiamas (palyginimams)')
     a = ap.parse_args()
+    global REASONING_BUDGET
+    REASONING_BUDGET = max(0, a.reasoning_budget)
     if a.max_tokens is None:
         a.max_tokens = 20000 if a.think else 6000
     if a.temperature is None:

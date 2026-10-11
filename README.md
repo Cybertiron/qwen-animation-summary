@@ -22,6 +22,7 @@ JavaScript modules and were compared with **Claude Opus 5.5**. Along the way we 
 - Giving Qwen **"eyes"** (rendered frames + a motion chart) let it catch and fix some visual bugs by itself, but not all.
 - **Update 2026-10-08:** [ISTA DASLab's GSQ-RCO](#4b-update-2026-10-08--gsq-rco-and-a-re-run) quant of Qwen 3.8 (11.8 GB, ~3.5 bit) makes a bee in the same quality class as the 14.3 GB IQ4_XS (~10 % faster at medium, but slower at xhigh). Also found: in llama.cpp b11037 a **DFlash draft + `--mmproj` breaks every request with an image**, so the "eyes" loop silently did nothing in those runs —
   with the **MTP** variant of the same quant the eyes work again.
+- **Update 2026-10-11:** [Qwen 3.8 Flash-Next on the Strata engine](#4c-update-2026-10-11--flash-next-on-strata) (ISTA-DASLab GSQ-RCO IQ3_S, both GPUs) writes a clean bee at **~105 tokens/s** — the fastest run so far. Strata has no default thinking budget, so `xhigh` needs one explicitly.
 
 > Code comments in `tools/` are partly in Lithuanian (the project language); the README and prompts are English.
 
@@ -255,6 +256,9 @@ and lands back in the same spot."* All rows below use the improved setup and a 1
 | [Qwen 3.8 GSQ-RCO-mtp · xhigh, 12k, MTP + eyes (10-08)](#qwen-38-gsq-rco-mtp--xhigh-12k-mtp--eyes-10-08) | 4 | 17.9 min | not judged yet — eyes fixed an off-centre orbit |
 | [Qwen 3.8 GSQ-RCO · xhigh, 12k (10-08)](#qwen-38-gsq-rco--xhigh-12k-10-08) | 1 | 5.7 min | not judged yet |
 | [Qwen 3.8 IQ4_XS · xhigh, 8k budget (10-08)](#qwen-38-iq4_xs--xhigh-8k-budget-10-08) | 4 | 11.5 min | ✗ trunk and soil start glowing |
+| [Qwen 3.8 Flash-Next · Strata · medium (10-11)](#qwen-38-flash-next--strata--medium-10-11) | 1 | 2.0 min | not judged yet — clean motion, treetop intact |
+| [Qwen 3.8 Flash-Next · Strata · xhigh, 12k (10-11)](#qwen-38-flash-next--strata--xhigh-12k-10-11) | 2 | 5.1 min | not judged yet — irregular flapping, partly out of frame |
+| Qwen 3.8 Flash-Next · Strata · xhigh, no budget (10-11) | 4 | 16 min | ✗ thought until the 20k cap four times, never wrote code |
 | [Qwen 3.8 · no thinking](#qwen-38--no-thinking) | 4 | ~3 min | good, only a timid flight |
 | [Qwen 3.8 · medium + eyes](#qwen-38--medium--eyes) | 3 | 5.8 min | almost — fixed its own too-fast wings, but doesn't circle the tree |
 | [Qwen 3.6 · + eyes](#qwen-36---eyes) | 4 | 12.4 min | almost — fixed its own out-of-phase wings |
@@ -335,6 +339,18 @@ Same as the 8k run but with the 12k budget: clean on the first try, 13,589 token
 wing flapping (interval spread 159 %); the eyes round failed (DFlash + image bug).
 ![frames](images/gsqrco_xhigh12k-frames.png)
 ![motion](images/gsqrco_xhigh12k-motion.png)
+
+#### Qwen 3.8 Flash-Next · Strata · medium (10-11)
+Clean on the first try: 11,779 tokens in 2 minutes at 104.6 tokens/s. The bee lifts off, circles the tree banking into the
+turn and lands back; the motion check found nothing, and the treetop stays intact.
+![frames](images/strata_medium-frames.png)
+![motion](images/strata_medium-motion.png)
+
+#### Qwen 3.8 Flash-Next · Strata · xhigh, 12k (10-11)
+With a 12k thinking budget: round 1 crashed in `setup()` (`src is not iterable`), round 2 passed (26,261 tokens, 5 min).
+The motion check flags irregular wing flapping, and the bee climbs partly out of the frame.
+![frames](images/strata_xhigh12k-frames.png)
+![motion](images/strata_xhigh12k-motion.png)
 
 #### Qwen 3.8 · no thinking
 Looks right, but the flight is small and timid.
@@ -417,6 +433,29 @@ Both models were run back to back on GPU1 with identical flags; numbers come fro
   medium — the budget cut them all. At 12k the xhigh answers still end at 13.1–13.6k, i.e. they hit 12k too. The owner's
   favourite (GSQ-RCO xhigh at 8k) suggests that a capped xhigh is not worse than an uncapped one for this task.
 
+## 4c. Update 2026-10-11 — Flash-Next on Strata
+
+Same Qwen 3.8 Flash-Next (177B MoE) as in the first comparison, but **ISTA-DASLab's GSQ-RCO IQ3_S** quant
+([ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF), main
+GGUF + the N-gram/PLE embedding shard) served by the **Strata 0.1.41** engine instead of llama.cpp: both RTX 3090s,
+MTP drafting (`--spec 4 --spec-min-p 0.5`), int8 KV, 256k context, an expert cache (~97 % hit rate). OpenAI-compatible
+server on port 8080; text only, so no eyes round (`run_compare.py --no-look`).
+
+| Run | Generated | Speed | Drafts accepted | Prompt read |
+|---|---:|---:|---:|---:|
+| medium | 11,779 | **104.6 t/s** | 69 % | 1,294 t/s |
+| xhigh + 12k, thinking (2 answers) | 12,000 each | 84.0 / 86.3 t/s | 60 / 62 % | — |
+| xhigh + 12k, code part (2 answers) | ~1,100 each | 108.9 / 126.8 t/s | 77 / 91 % | — |
+| xhigh, no budget (4 answers) | 20,000 each (cap) | 82–85 t/s | 58–62 % | 1,362 t/s |
+
+**Findings**
+
+- **Fastest local run so far.** ~105 t/s at medium versus ~36 t/s for Flash-Next on llama.cpp and 55–61 t/s for the
+  27B models on one GPU — the bee took 2 minutes.
+- **Strata does not cap thinking by default.** At `xhigh` the model thought until the 20k answer limit four times and never
+  wrote code. With a per-request budget (`reasoning_budget_tokens`, our `--reasoning-budget 12000`) it finished, but the
+  medium result looks better — the same pattern as the 27B models.
+
 ## 5. What we learned
 
 1. **Information beats model size.** Named part boxes and nested parts turned the bee from "no model can do it" into
@@ -446,6 +485,7 @@ Both models were run back to back on GPU1 with identical flags; numbers come fro
 | `tools/bench_spec.py`, `results/bench_spec*.json` | speculative-decoding benchmark and raw results |
 | `tools/start_qwen38.bat`, `tools/start_qwen36.bat`, `tools/start_qwen38_gsq.bat` | final llama-server launchers |
 | `tools/render_gallery.py` | frame sheet + motion chart for an already saved animation (gallery images) |
+| `tools/run_compare.py --no-look --reasoning-budget N` | text-only servers (no eyes) and servers that take a per-request thinking budget (Strata) |
 | `host/anim-host-excerpt.js` | the site's side of the animation API |
 | `animations/claude/` | Claude's verified examples (robot, rocket) |
 | `animations/qwen-bee/` | every Qwen bee variant shown above |
