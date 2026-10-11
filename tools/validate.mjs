@@ -100,6 +100,19 @@ catch (err) { errors.push('Failas neįsikelia: ' + err.message); done(); }
 if (!A || typeof A.update !== 'function') { errors.push('export default turi turėti update(ctx) funkciją'); done(); }
 const matState = () => mats.map(m => m.color.getHexString() + '|' + m.opacity + '|' + m.transparent).join(',');
 const mat0 = matState();
+// kiekvienos spalvos (gijos) viršūnių centras pasaulio koordinatėmis — ar spausdinant (e=0) modelis stovi ten, kur atspausdintas
+const centers = () => {
+    modelGroup.updateMatrixWorld(true);
+    const acc = mats.map(() => [0, 0, 0, 0]), v = new THREE.Vector3();
+    modelGroup.traverse(o => {
+        if (!o.isMesh) return;
+        const k = mats.indexOf(o.material); if (k < 0) return;
+        const P = o.geometry.attributes.position;
+        for (let i = 0; i < P.count; i++) { v.fromBufferAttribute(P, i).applyMatrix4(o.matrixWorld); acc[k][0] += v.x; acc[k][1] += v.y; acc[k][2] += v.z; acc[k][3]++; }
+    });
+    return acc.map(a => a[3] ? [a[0] / a[3], a[1] / a[3], a[2] / a[3]] : null);
+};
+const center0 = centers();
 try { if (A.setup) A.setup(ctx); } catch (err) { errors.push('setup() klaida: ' + err.message); done(); }
 stats.splits = splits.map(q => ({ tris: q.tris, pivot: q.pivot.toArray().map(v => +v.toFixed(3)) }));
 
@@ -126,6 +139,11 @@ for (let e = 0; e <= 7.0001; e += 1 / 30) {
     if (nanExtra) { errors.push(`NaN extra objektuose ties e=${e.toFixed(2)}`); break; }
     if (Math.abs(e) < 1e-6) { let v0 = 0; extra.traverseVisible(o => { if (o.isMesh && (!o.material.transparent || o.material.opacity > .02) && o.scale.x * o.scale.y * o.scale.z > 1e-6) v0++; });
         if (v0) errors.push(`Ties e=0 (dar spausdinama) matoma ${v0} extra objektų — jie turi atsirasti tik animacijos metu (obj.visible = amount > 0.01)`); }
+    if (Math.abs(e) < 1e-6) {                                        // dalys perkeltos (pvz. pakeistas sukimo centras), nors „ramybės“ padėtis atrodo nejudanti
+        const c1 = centers(), tol = Math.max(size.x, size.y, size.z) * 0.01 * s;
+        c1.forEach((c, k) => { if (c && center0[k] && Math.hypot(c[0] - center0[k][0], c[1] - center0[k][1], c[2] - center0[k][2]) > tol)
+            errors.push(`Ties e=0 (dar spausdinama) spalvos #${k} dalys ne savo vietoje (pasislinko ${(Math.hypot(c[0] - center0[k][0], c[1] - center0[k][1], c[2] - center0[k][2]) / s).toFixed(1)} mm) — dalis turi likti ten, kur atspausdinta; sukimo centrą keiskite neperkeldami geometrijos`); });
+    }
     if (Math.abs(e) < 1e-6 && diff(sn, rest) > 1e-3) warnings.push('Ties e=0 (dar spausdinama) modelis ne ramybės padėtyje — spausdinant jis turi stovėti vietoje');
     if (e > 0.3 && e < 1.6 && diff(sn, rest) > 0.02) warnings.push('Modelis juda 0.3–1.6 s — tuo metu nulaužiamos atramos; pradėkite nuo ~1.7 s');
 }

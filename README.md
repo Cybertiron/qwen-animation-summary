@@ -259,6 +259,8 @@ and lands back in the same spot."* All rows below use the improved setup and a 1
 | [Qwen 3.8 Flash-Next · Strata · medium (10-11)](#qwen-38-flash-next--strata--medium-10-11) | 1 | 2.0 min | not judged yet — clean motion, treetop intact |
 | [Qwen 3.8 Flash-Next · Strata · xhigh, 12k (10-11)](#qwen-38-flash-next--strata--xhigh-12k-10-11) | 2 | 5.1 min | not judged yet — irregular flapping, partly out of frame |
 | Qwen 3.8 Flash-Next · Strata · xhigh, no budget (10-11) | 4 | 16 min | ✗ thought until the 20k cap four times, never wrote code |
+| [Qwen 3.8 Flash-Next · Strata · xhigh 12k + eyes (10-11)](#qwen-38-flash-next--strata--xhigh-12k--eyes-10-11) | 4 | 9.8 min | not judged yet — eyes fixed a jerky spin, lands back |
+| [Qwen 3.8 Flash-Next · Strata · medium + eyes (10-11)](#qwen-38-flash-next--strata--medium--eyes-10-11) | 5 | 6.1 min | ✗ the eyes' fix moved the bee itself into the canopy |
 | [Qwen 3.8 · no thinking](#qwen-38--no-thinking) | 4 | ~3 min | good, only a timid flight |
 | [Qwen 3.8 · medium + eyes](#qwen-38--medium--eyes) | 3 | 5.8 min | almost — fixed its own too-fast wings, but doesn't circle the tree |
 | [Qwen 3.6 · + eyes](#qwen-36---eyes) | 4 | 12.4 min | almost — fixed its own out-of-phase wings |
@@ -351,6 +353,20 @@ With a 12k thinking budget: round 1 crashed in `setup()` (`src is not iterable`)
 The motion check flags irregular wing flapping, and the bee climbs partly out of the frame.
 ![frames](images/strata_xhigh12k-frames.png)
 ![motion](images/strata_xhigh12k-motion.png)
+
+#### Qwen 3.8 Flash-Next · Strata · xhigh 12k + eyes (10-11)
+With Strata's vision model the eyes worked: *"the wings flap too fast — on the chart it reads as a sudden, messy spin … the orbit
+path still has a visible abrupt lateral stop"*. Both fixed; the bee sits on the tree, circles above it and lands back.
+![frames](images/strata_xhigh_eyes-frames.png)
+![motion](images/strata_xhigh_eyes-motion.png)
+
+#### Qwen 3.8 Flash-Next · Strata · medium + eyes (10-11)
+The eyes saw a real problem — *"the flight path reads as a loop floating in front of the tree rather than a lap around it"* —
+but the fix moved the split's pivot together with its geometry: the bee is already inside the canopy while printing (e=1.0)
+and never returns to the top. The old validator compared poses against the pose *after* `setup()`, so it passed; the new
+placement check rejects it (parts moved 50–70 mm).
+![frames](images/strata_medium_eyes-frames.png)
+![motion](images/strata_medium_eyes-motion.png)
 
 #### Qwen 3.8 · no thinking
 Looks right, but the flight is small and timid.
@@ -455,6 +471,9 @@ server on port 8080; text only, so no eyes round (`run_compare.py --no-look`).
 - **Strata does not cap thinking by default.** At `xhigh` the model thought until the 20k answer limit four times and never
   wrote code. With a per-request budget (`reasoning_budget_tokens`, our `--reasoning-budget 12000`) it finished, but the
   medium result looks better — the same pattern as the 27B models.
+- **Eyes on Strata (after adding its vision model):** images work (it described our frame sheet correctly). At `xhigh` the
+  eyes improved the bee; at `medium` they made it worse — the model moved the bee itself while re-centring its orbit. The
+  validator now checks that, at e=0, every colour's vertex centre is where it was printed (1 % tolerance); all earlier bees pass.
 
 ## 5. What we learned
 
